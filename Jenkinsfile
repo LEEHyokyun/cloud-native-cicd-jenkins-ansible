@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GRADLE_OPTS = "-Dorg.gradle.daemon=false"
-        TOMCAT_CONTAINER = "cloud-native-cicd-tomcat-inInfra"
+        TOMCAT_CONTAINER = "cloud-native-cicd-tomcat"
     }
 
     stages {

@@ -10,7 +10,7 @@
 
 ## 3. pipeline
 
-![img.png](img.png)
+![img_1.png](img_1.png)
 - Ansibe 컨테이너는 CD의 역할을 하며, 어디에 배포할지 결정하고 명령을 내리는 컨트롤 타워의 역할을 한다.
 - 명령을 전달하여 그 결과를 수집하는 관리자의 역할.
 
@@ -30,12 +30,18 @@ ssh root@server
 | Application | 8090      | (내부 실행 포트)            | Spring Boot 등 애플리케이션    |
 
 ```scss
-1. 개발자가 Git push
-2. Jenkins가 코드 빌드
-3. Jenkins가 Ansible 실행
-4. Ansible이 Java 서버에 접속 (SSH)
-5. Java 서버에 배포
+1. Git push
+2. Jenkins가 코드 빌드 → app.jar 생성
+3. Jenkins가 Ansible 실행 (ansible-playbook)
+4. Ansible이 Jenkins에 있는 jar를 가져다가 (scp/ssh)
+5. Target 서버로 복사 후 배포, 재실행(systemed)
 ```
+
+> 내부적으로 Jenkins가 Ansible-playbook을 통해 Ansible 실행, 이후 Ansible이 SSH/SCP를 통해 파일 복사(배포).
+- jar는 /workspace/project/build/libs/app.jar에 존재하며
+- Ansible을 실행할때 그 경로를 넘기고, target server에 복사(배포)
+- 기존 앱을 재실행
+  - 컨테이너 환경에서 ssh를 통한 통신 및 scp를 통한 파일 전송이 핵심, docker.sock(host daemon interface x)
 
 ※ 참고 : Http vs SSH(TCP기반 응용계층이자 Client/Server(sshd)간 통신을 위한 프로그램)
 
