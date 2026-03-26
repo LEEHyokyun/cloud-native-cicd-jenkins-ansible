@@ -22,12 +22,12 @@ ssh root@server
 /usr/sbin/sshd
 ```
 
-| 구성 요소       | Host Port | Container(Inner) Port | 설명                      |
-|-------------|-----------| --------------------- | ----------------------- |
-| Jenkins     | 8080      | 8080                  | CI/CD 서버                |
-| Tomcat      | 8081      | 8080                  | WAS (외부 8081 → 내부 8080) |
-| Ansible     | 8082      | 8080                  |  |
-| Application | 8090      | (내부 실행 포트)            | Spring Boot 등 애플리케이션    |
+| 구성 요소       | Host Port | Container(Inner) Port | 설명                       |
+|-------------|-----------|-----------------------|--------------------------|
+| Jenkins     | 8080      | 8080                  | CI/CD 서버                 |
+| Tomcat      | 8081      | 8080                  | WAS (외부 8081 → 내부 8080)  |
+| Ansible     | 8082      | 8080                  | Docker Network에서 SCP/SSH |
+| Application | 8090      | 8090                     | Spring Boot 등 애플리케이션     |
 
 ```scss
 1. Git push
