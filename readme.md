@@ -31,17 +31,25 @@ ssh root@server
 
 ```scss
 1. Git push
-2. Jenkins가 코드 빌드 → app.jar 생성
-3. Jenkins가 Ansible 실행 (ansible-playbook)
-4. Ansible이 Jenkins에 있는 jar를 가져다가 (scp/ssh)
-5. Target 서버로 복사 후 배포, 재실행(systemed)
+2. Jenkins가 코드 빌드 및 Registry push, ansible 실행
 ```
 
-> 내부적으로 Jenkins가 Ansible-playbook을 통해 Ansible 실행, 이후 Ansible이 SSH/SCP를 통해 파일 복사(배포).
+```
+Jenkins
+- build (jar)
+- docker build
+- docker push
+```
+
+```scss
+3. Ansible playbook이 SSH를 통해 배포 대상 서버에 접속해서 registry로부터 image pull, 반영(docker compose)
+4. playbook을 기반으로 배포 대상 서버는 docker image pull, compose restart하여 재실행, 반영
+```
+
+> 내부적으로 Jenkins가 Ansible-playbook을 통해 Ansible 실행, 이후 Ansible이 docker image build 등을 통해 무중단 배포 및 반여.
 - jar는 /workspace/project/build/libs/app.jar에 존재하며
-- Ansible을 실행할때 그 경로를 넘기고, target server에 복사(배포)
-- 기존 앱을 재실행
-  - 컨테이너 환경에서 ssh를 통한 통신 및 scp를 통한 파일 전송이 핵심, docker.sock(host daemon interface x)
+- Ansible을 실행할때 그 경로를 넘기고, Docker image build/deploy 
+  - 현재 docker compose 실행 체계는 내 컴퓨터이기에, Ansible이 SSH 실행하지 않고 바로 pull, restart한다.
 
 ※ 참고 : Http vs SSH(TCP기반 응용계층이자 Client/Server(sshd)간 통신을 위한 프로그램)
 
