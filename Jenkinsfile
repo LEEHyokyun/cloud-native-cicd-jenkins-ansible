@@ -55,7 +55,7 @@ pipeline {
             steps {
                 sh """
                 ssh root@cloud-native-cicd-ansible-server \
-                "ansible-playbook -i /inventory.ini /playbook.yml -u ansible_test"
+                "ansible-playbook -i /inventory.ini /playbook.yml"
                 """
             }
         }
