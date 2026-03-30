@@ -4,7 +4,7 @@ pipeline {
     environment {
         //GRADLE_OPTS = "-Dorg.gradle.daemon=false"
         IMAGE_NAME = "leehyokyun/cicd-jenkins-ansible"
-        IMAGE_TAG = "${BUILD_NUMBER}"
+        //IMAGE_TAG = "${BUILD_NUMBER}"
         DOCKER_CREDENTIALS_ID = "leehyokyun-cicd-jenkins-ansible-cred"
     }
 
@@ -31,7 +31,7 @@ pipeline {
         stage('Dokcer Build'){
             steps {
                 sh """
-                docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                docker build -t ${IMAGE_NAME}:latest .
                 """
             }
         }
@@ -55,7 +55,7 @@ pipeline {
             steps {
                 sh """
                 ssh -p 20022 root@localhost \
-                "ansible-playbook -i /root/inventory.ini /root/deploy.yml"
+                "ansible-playbook -i /inventory.ini /deploy.yml"
                 """
             }
         }

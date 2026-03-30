@@ -53,6 +53,7 @@ Jenkins
 
 > KEY POINTS
 - 최종 실행 주체는 host OS(내컴퓨터 그 자체가 pull받은 도커이미지를 실행하는 방식)
+- ansible의 control 주체는 결국 컨테이너가 아닌 서버 그 자체이다.
 
 ※ 참고 : Http vs SSH(TCP기반 응용계층이자 Client/Server(sshd)간 통신을 위한 프로그램)
 
