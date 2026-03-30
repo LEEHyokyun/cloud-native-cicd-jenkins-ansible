@@ -45,7 +45,7 @@ pipeline {
                 )]) {
                     sh """
                     echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                    docker push ${IMAGE_NAME}:latest
                     """
                 }
             }
@@ -55,7 +55,7 @@ pipeline {
             steps {
                 sh """
                 ssh -p 20022 root@localhost \
-                "ansible-playbook -i /inventory.ini /deploy.yml"
+                "ansible-playbook -i /inventory.ini /playbook.yml"
                 """
             }
         }
