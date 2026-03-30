@@ -54,7 +54,7 @@ pipeline {
         stage('Deploy via Ansible') {
             steps {
                 sh """
-                ssh -p 20022 root@localhost \
+                ssh root@cloud-native-cicd-ansible-server \
                 "ansible-playbook -i /inventory.ini /playbook.yml"
                 """
             }
