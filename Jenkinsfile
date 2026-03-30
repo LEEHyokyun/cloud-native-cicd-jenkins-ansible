@@ -51,15 +51,14 @@ pipeline {
             }
         }
 
-//        stage('Deploy via Ansible') {
-//            steps {
-//                sh """
-//                ansible-playbook -i ansible/inventory.ini \n
-//                ansible/deploy.yml \n
-//                --extra-vars "image=${IMAGE_NAME}:${IMAGE_TAG}"
-//                """
-//            }
-//        }
+        stage('Deploy via Ansible') {
+            steps {
+                sh """
+                ssh -p 20022 root@localhost \
+                "ansible-playbook -i /root/inventory.ini /root/deploy.yml"
+                """
+            }
+        }
     }
 
     post {
