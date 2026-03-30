@@ -2,8 +2,10 @@ pipeline {
     agent any
 
     environment {
-        GRADLE_OPTS = "-Dorg.gradle.daemon=false"
-        TOMCAT_CONTAINER = "cloud-native-cicd-tomcat"
+        //GRADLE_OPTS = "-Dorg.gradle.daemon=false"
+        IMAGE_NAME = "leehyokyun/cicd-jenkins-ansible"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+        DOCKER_CREDENTIALS_ID = "leehyokyun-cicd-jenkins-ansible-cred"
     }
 
     stages {
@@ -26,30 +28,43 @@ pipeline {
             }
         }
 
-        stage('Deploy to Tomcat') {
+        stage('Dokcer Build'){
             steps {
-                sh '''
-                # WAR 파일 찾기
-                WAR_FILE=$(ls build/libs/*.war | head -n 1)
-
-                echo "Deploying $WAR_FILE"
-
-                # Tomcat 컨테이너로 복사
-                docker cp $WAR_FILE $TOMCAT_CONTAINER:/usr/local/tomcat/webapps/ROOT.war
-                '''
+                sh """
+                docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                """
             }
         }
 
-        stage('Check Docker Is Active') {
+        stage('Docker Push') {
             steps {
-                sh 'docker --version || echo "docker CLI not found"'
+                withCredentials([usernamePassword(
+                        credentialsId: DOCKER_CREDENTIALS_ID,
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh """
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                    """
+                }
             }
         }
+
+//        stage('Deploy via Ansible') {
+//            steps {
+//                sh """
+//                ansible-playbook -i ansible/inventory.ini \n
+//                ansible/deploy.yml \n
+//                --extra-vars "image=${IMAGE_NAME}:${IMAGE_TAG}"
+//                """
+//            }
+//        }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
+            archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
         }
         success {
             echo '[Success] Build & Deploy Success'
